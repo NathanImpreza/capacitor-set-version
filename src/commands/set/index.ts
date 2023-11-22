@@ -16,9 +16,11 @@ export default class Set extends CustomCommand {
     const dir = args['dir'];
     const version = flags.version;
     const build = flags.build;
+    const iosProjectPath = flags.iosproject;
+    const iosPlistPath = flags.iosplist;
 
     await SetAndroid.run([dir, '-v', version, '-b', build.toString()]);
-    await SetIOS.run([dir, '-v', version, '-b', build.toString()]);
+    await SetIOS.run([dir, '--iosplist', iosPlistPath, '--iosproject', iosProjectPath, '-v', version, '-b', build.toString()]);
 
     return { version, build };
   }

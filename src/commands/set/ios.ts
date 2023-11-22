@@ -23,19 +23,21 @@ export default class SetIOS extends CustomCommand {
     const dir = args['dir'];
     const version = flags.version;
     const build = flags.build;
+    const iosProjectPath = flags.iosproject;
+    const iosPlistPath = flags.iosplist;
 
     try {
       checkForCapacitorProject(dir);
-      checkForIOSPlatform(dir);
+      checkForIOSPlatform(dir,iosPlistPath);
 
       // In legacy xCode projects, the version information was stored inside info.plist file.
       // For modern projects, it is stored in project.pbxproj file.
       // The command will handle both legacy and modern projects.
-      if (isLegacyIOSProject(dir)) {
+      if (isLegacyIOSProject(dir,iosPlistPath)) {
         this.warn('Legacy iOS project detected, please update to the latest xCode');
-        setIOSVersionAndBuildLegacy(dir, version, build);
+        setIOSVersionAndBuildLegacy(dir,iosPlistPath, version, build);
       } else {
-        setIOSVersionAndBuild(dir, version, build);
+        setIOSVersionAndBuild(dir,iosProjectPath, version, build);
       }
     } catch (error) {
       if (error instanceof CustomError) {

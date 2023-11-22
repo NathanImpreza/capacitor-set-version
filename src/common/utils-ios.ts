@@ -3,10 +3,8 @@ import * as plist from 'plist';
 import * as path from 'path';
 import CustomError from './custom-error';
 
-export const IOS_PLIST_FILE_PATH = 'ios/App/App/Info.plist';
-export const IOS_PROJECT_FILE_PATH = 'ios/App/App.xcodeproj/project.pbxproj';
 
-export function checkForIOSPlatform(dir: string) {
+export function checkForIOSPlatform(dir: string, iosPlistFilePath: string) {
   const iosFolderPath = path.join(dir, 'ios');
 
   if (!fs.existsSync(iosFolderPath)) {
@@ -16,7 +14,7 @@ export function checkForIOSPlatform(dir: string) {
     });
   }
 
-  const infoPlistFilePath = path.join(dir, IOS_PLIST_FILE_PATH);
+  const infoPlistFilePath = path.join(dir, 'ios', iosPlistFilePath);
 
   if (!fs.existsSync(infoPlistFilePath)) {
     throw new CustomError(`Invalid iOS platform: file ${infoPlistFilePath} does not exist`, {
@@ -26,16 +24,16 @@ export function checkForIOSPlatform(dir: string) {
   }
 }
 
-export function isLegacyIOSProject(dir: string): boolean {
-  const infoPlistFilePath = path.join(dir, IOS_PLIST_FILE_PATH);
+export function isLegacyIOSProject(dir: string, iosPlistFilePath: string): boolean {
+  const infoPlistFilePath = path.join(dir, 'ios', iosPlistFilePath);
 
   const file = fs.readFileSync(infoPlistFilePath);
 
   return !file.includes('$(MARKETING_VERSION)');
 }
 
-export function setIOSVersionAndBuild(dir: string, version: string, build: number) {
-  const projectFilePath = path.join(dir, IOS_PROJECT_FILE_PATH);
+export function setIOSVersionAndBuild(dir: string, iosProjectFilePath: string, version: string, build: number) {
+  const projectFilePath = path.join(dir, 'ios', iosProjectFilePath);
 
   let file = openIOSProjectFile(projectFilePath);
 
@@ -45,8 +43,8 @@ export function setIOSVersionAndBuild(dir: string, version: string, build: numbe
   saveIOSProjectFile(projectFilePath, file);
 }
 
-export function setIOSVersionAndBuildLegacy(dir: string, version: string, build: number) {
-  const plistFilePath = path.join(dir, IOS_PLIST_FILE_PATH);
+export function setIOSVersionAndBuildLegacy(dir: string, iosPlistFilePath: string, version: string, build: number) {
+  const plistFilePath = path.join(dir, 'ios', iosPlistFilePath);
 
   let file = openInfoPlistFile(plistFilePath);
 
